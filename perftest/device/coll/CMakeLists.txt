@@ -1,0 +1,7 @@
+nvshmem_add_perftest(alltoall_bw.cu)
+nvshmem_add_perftest(alltoall_latency.cu)
+nvshmem_add_perftest(barrier_latency.cu)
+nvshmem_add_perftest(bcast_latency.cu)
+nvshmem_add_perftest(fcollect_latency.cu)
+nvshmem_add_perftest(reduction_latency.cu)
+nvshmem_add_perftest(sync_latency.cu)

@@ -1,0 +1,25 @@
+NVSHMEM {
+  global: nvshmem_*;
+          nvshmemx_*;
+          nvshmemi_finalize;
+          nvshmem_debug_log;
+          nvshmemi_malloc;
+          nvshmemi_options;
+          nvshmemi_state;
+          nvshmemi_device_state;
+          nvshmemi_team_pool;
+          nvshmemi_job_connectivity;
+          nvshmemi_check_state_and_init_fn_ptr;
+          nvshmemi_init_counter;
+          nvshmemi_boot_handle;
+          nvshmemi_is_nvshmem_initialized;
+          nvshmemi_is_nvshmem_bootstrapped;
+          nvshmemi_is_mpg_run;
+          nvshmemi_is_limited_mpg_run;
+          nvshmemi_register_state_change_handler;
+          nvshmemi_update_device_state;
+          pfn_*;
+          nvshmemi_is_version_compatible;
+          p_err_str;
+  local: *;
+};

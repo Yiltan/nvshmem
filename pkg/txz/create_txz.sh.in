@@ -1,0 +1,15 @@
+#!/bin/bash
+
+NVSHMEM_MAJOR=${nvshmem:Major}
+NVSHMEM_MINOR=${nvshmem:Minor}
+NVSHMEM_PATCH=${nvshmem:Patch}
+CUDA_MAJOR=${cuda:Major}
+CUDA_MINOR=${cuda:Minor}
+PKG_REVISION=${pkg:Revision}
+PKG_ARCH=${pkg:Arch}
+
+NVSHMEMNAME="nvshmem_${NVSHMEM_MAJOR}.${NVSHMEM_MINOR}.${NVSHMEM_PATCH}-${PKG_REVISION}+cuda${CUDA_MAJOR}.${CUDA_MINOR}_${PKG_ARCH}"
+
+git rev-parse HEAD > git_commit.txt
+tar --transform "s=^=${NVSHMEMNAME}/=S" -Jcf $NVSHMEMNAME.txz --owner=0 --group=0 bin changelog common.mk COPYRIGHT.txt examples git_commit.txt include lib NVSHMEM-SLA.txt perftest scripts/install_hydra.sh share
+rm git_commit.txt

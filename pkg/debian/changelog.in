@@ -1,0 +1,5 @@
+libnvshmem (${nvshmem:Major}.${nvshmem:Minor}.${nvshmem:Patch}${nvshmem:Suffix}-${pkg:Revision}+cuda${cuda:Major}.${cuda:Minor}) trusty; urgency=medium
+
+  * Automatic Debian package from build
+
+ -- NVSHMEM Maintainers <nvshmem@nvidia.com>  ${pkg:Timestamp}

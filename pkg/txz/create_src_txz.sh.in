@@ -1,0 +1,32 @@
+#!/bin/bash
+
+NVSHMEM_MAJOR=${nvshmem:Major}
+NVSHMEM_MINOR=${nvshmem:Minor}
+NVSHMEM_PATCH=${nvshmem:Patch}
+CUDA_MAJOR=${cuda:Major}
+PKG_REVISION=${pkg:Revision}
+PKG_ARCH=${pkg:Arch}
+
+FILE_LIST="changelog \
+           CMakeLists.txt \
+           common.mk \
+           COPYRIGHT.txt \
+           examples \
+           git_commit.txt \
+           Makefile \
+           NVSHMEMConfig.cmake.in \
+           nvshmem_bootstrap.sym \
+           nvshmem_host.sym \
+           nvshmem_transport.sym \
+           NVSHMEM-SLA.txt \
+           perftest \
+           pkg \
+           scripts \
+           src \
+           version.mk "
+
+NVSHMEMNAME="nvshmem_src_${NVSHMEM_MAJOR}.${NVSHMEM_MINOR}.${NVSHMEM_PATCH}-${PKG_REVISION}"
+
+git rev-parse HEAD > git_commit.txt
+tar --transform "s=^=${NVSHMEMNAME}/=S" -Jcf $NVSHMEMNAME.txz --owner=0 --group=0 ${FILE_LIST}
+rm git_commit.txt

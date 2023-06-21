@@ -1,0 +1,263 @@
+===============================================================================
+				Changes in 2.9.0
+===============================================================================
+
+# Improvements to CMake build system. CMake is now the default build system and
+the Makefile build system is deprecated.
+# Added loadable network transport modules.
+# NVSHMEM device code can now be inlined to improve performance by enabling
+NVSHMEM_ENABLE_ALL_DEVICE_INLINING when building the NVSHMEM library.
+# Improvements to collective communication performance.
+# Updated libfabric transport to fragment messages larger than the maximum
+length supported by the provider.
+# Improvements to IBGDA transport, including large message support, user buffer
+registration, blocking g/get/amo performance, CUDA module support, and several
+bugfixes.
+# Introduced ABI compatibility for bootstrap modules. This release is
+backawards compatible with the ABI introduced in NVSHMEM 2.8.0.
+# Added NVSHMEM_BOOTSTRAP_*_PLUGIN environment variables that can be used to
+override the default filename used when opening each bootstrap plugin.
+# Improved error handling for GDRCopy.
+# Added a check to detect when the same number of PEs is not run on all nodes.
+# Added a check to detect availability of nvidia_peermem kernel module.
+# Reduced internal stream synchronizations to fix a compatibility bug with CUDA
+graph capture.
+# Fixed a data consistency issue with CUDA graph capture support.
+
+===============================================================================
+				Changes in 2.8.0
+===============================================================================
+
+# The transport formerly called GPU Initiated Communication (GIC) has been
+renamed to InfiniBand GPUDirect Async (IBGDA) to reflect the underlying
+technology used by that transport.
+# Improvements to the all-to-all algorithm were made for both the IBGDA and
+IBRC transports. These changes specifically focused on latency bound all-to-all
+operations.
+# Support for RC connections was added to IBGDA to optimize workloads on small
+PE sets.
+# Fixed an issue in the IBGDA Transport which caused all GPUs on the same host
+to use the same NIC.
+# Fixed an issue in the DMA-BUF registration path. Users no longer need to
+limit their allocation granularity to 4GiB when using DMABUF.
+
+===============================================================================
+				Changes in 2.7.0
+===============================================================================
+
+# Added experimental CMake build system that will replace the Makefile in a
+future release
+# Updated GPU Initiated Communication (GIC) transport provides significant
+performance improvements over NVSHMEM 2.6.0
+# Added NVSHMEM version checks to ensure that the dynamically linked NVSHMEM
+host library is compatible with the statically linked device library. Also
+added compatibility checks for the inbuilt bootstrap plugins.
+# Added support for CUDA minor version compatibility, which allows NVSHMEM
+application binaries built with CUDA M.X to run with M.Y, where M is the
+major version and X and Y are compatible minor versions
+# NVSHMEM library now statically links libcudart_static.a and dlopens libcuda.so
+# Improved timing in NVSHMEM performance tests to reduce noise in measurements
+# Added support for Hopper compute_90 and sm_90
+# Removed support for Pascal compute_60, sm_60, compute_61, and sm_61
+# Added version number suffix to libnvshmem_host.so and bootstrap plugins
+# Added support for dmabuf memory registration
+# Updated Hydra installation script to install Hydra 4.0.2
+# Added a pre-built Hydra launcher to NVSHMEM binary packages.
+# Catch user buffer registration error when requested buffer overlaps with an
+already registered memory region
+# An issue causing validation errors in collective operations when all GPUs
+in a job are connected via PCIe without a remote transport using the proxy
+thread was fixed.
+
+
+===============================================================================
+				Changes in 2.6.0
+===============================================================================
+
+# Added new GPU initiated communication transport that allows kernel initiated
+communication to be issued directly to the NIC and bypass the CPU proxy thread.
+The transport is currently provided in experimental mode. It is disabled by default.
+Please refer to installation guide for how to enable it.
+# Updated the libfabric transport with initial support for Slingshot-11 networks.
+Performance tuning for the libfabric transport is ongoing.
+# Added collective algorithms for bcast/fcollect/reduce that use low latency (LL)
+optimization by sending data and synchronization together, resulting in
+significant performance improvements.
+# Added warp- and block-scope implementation of recursive exchange algorithm for
+reduce collectives
+# Fixed bug in host/on-stream RMA API for very large data transfers
+# Fixed bug in implementation of nvshmem_fence and nvshmemx_quiet_on_stream API
+
+===============================================================================
+				Changes in 2.5.0
+===============================================================================
+
+# Added multi-instance support in NVSHMEM. NVSHMEM now builds as two libraries,
+libnvshmem_host.so and libnvshmem_device.a, making it possible for an
+application to have multiple components (for example, shared libraries,
+application itself) that use NVSHMEM. Support for single library, libnvshmem.a,
+still exists for legacy purposes but will be eventually removed.
+# Added nvshmemx_init_status API to query the initialized state of NVSHMEM
+# Added experimental DevX transport that directly uses Mellanox software stack
+for InfiniBand devices
+# Added experimental libfabric transport that will be used to support Slingshot
+networks in a future release
+# Added support for CUDA_VISIBLE_DEVICES. Support for CUDA_VISIBLE_DEVICES is
+not yet available with CUDA VMM and requires setting NVSHMEM_DISABLE_CUDA_VMM=1.
+# Updated PMI and PMI-2 bootstraps to plugins
+# Added nvshmem-info utility to display information about the NVSHMEM library
+# Fixed warnings when using NVSHMEM in applications compiled without RDC
+(Relocatable Device Code) option
+# Renamed internal variables to avoid potential conflicts with variables in
+application
+# Implemented nvshmem_alltoallmem API
+# Improve GPU to NIC assignment logic for Summit/Sierra supercomputer
+# Fixed host barrier API implementation for non-blocking on stream (*_nbi_on_stream)
+point-to-point operations
+# Updated descriptions for NVSHMEM environment variables displayed via
+nvshmem-info or by setting NVSHMEM_INFO=1
+
+===============================================================================
+				Changes in 2.4.1
+===============================================================================
+
+# Added limited support for Multiple Processes per GPU (MPG) on x86 platforms.
+The amount of support depends on availability of CUDA MPS. MPG support is
+currently not available on P9 platforms. 
+# Added a local buffer registration API that allows non-symmetric buffers to be
+used as local buffers in NVSHMEM API. 
+# Added support for dynamic symmetric heap allocation, which eliminates the need
+to specify NVSHMEM_SYMMETRIC_SIZE. 
+This feature is available with CUDA >= 11.3 and is enabled by default on x86
+platforms. On P9 platforms, it is disabled by default, and can be enabled using
+NVSHMEM_CUDA_DISABLE_VMM environment variable 
+# Support for very large RMA messages has been added 
+# NVSHMEM can now be built without ibrc support by setting NVSHMEM_IBRC_SUPPORT=0
+in the environment before building.
+This allows users to build and run NVSHMEM without the GDRCopy and OFED dependencies. 
+# Support for calling nvshmem_init/finalize multiple times with MPI bootstrap 
+# Improved testing coverage (large messages, exercising full GPU memory, and so on) 
+# Improved the default PE to NIC assignment for DGX2 systems 
+# Optimized channel request processing by CPU proxy thread 
+# Added support for the shmem_global_exit API 
+# Removed redundant barriers to improve the collectives’ performance 
+# Significant code refactoring to use templates instead of macros for internal
+functions 
+# Improved performance for device-side blocking RMA and strided RMA API 
+# Bug fix for buffers with large offsets into the NVSHMEM symmetric heap 
+
+===============================================================================
+				Changes in 2.2.1
+===============================================================================
+
+# Implemented dynamic heap memory allocation (requires CUDA version >= 11.3) for
+runs with P2P GPUs. It can be enabled using NVSHMEM_DISABLE_CUDA_VMM=0. Support
+for IB runs will be added in the next release.
+# Improved UCX transport performance for AMO and RMA operations
+# Improved performance for warp and block put/get operations
+# Added atomic support for PCIe connected GPUs over the UCX transport
+# UCX transport now supports non-symmetric buffers for use as local buffers
+in RMA and AMO operations
+# Added support for initializing NVSHMEM in CUmodule
+# Enabled MPI and PMIx bootstrap modules to be compiled externally from the
+NVSHMEM build. This allows multiple builds of these plugins to support various
+MPI and PMIx libraries. They can be selected by setting NVSHMEM_BOOTSTRAP="plugin"
+and NVSHMEM_BOOTSTRAP_PLUGIN="plugin_name.so". Plugin sources are installed along
+with the compiled NVSHMEM library.
+# Enabled MPI bootstrap to be used with nvshmem_init by setting
+NVSHMEM_BOOTSTRAP=MPI or via the bootstrap plugin method.
+# Fixed bugs in nvshmem_<typename>_g and fetch atomics implementation
+# Changed nvshmem_<typename>_collect to nvshmem_<typename>_fcollect to match
+OpenSHMEM specification
+# Fixed type of nreduce argument in reduction API to size_t to match OpenSHMEM
+specification
+# Improved NVSHMEM build times with multi-threaded option in CUDA compiler
+(requires CUDA version >= 11.2)
+# Several fixes to address Coverity reports
+
+===============================================================================
+				Changes in 2.1.2
+===============================================================================
+
+# Added a new, experimental UCX internode communication transport layer
+# Added support for automatic warp-level coalescing of nvshmem_g operations
+# Added support for put-with-signal operations on CUDA streams
+# Added support for mapping the symmetric heap using the cuMem APIs
+# Improved performance of single-threaded NVSHMEM put/get device API
+# Added the NVSHMEM_MAX_TEAMS environment variable to specify maximum number
+of teams that can be created
+# Improved the host and on-stream Alltoall performance by using NCCL
+# Fixed a bug in the compare-and-swap operation that caused several bytes of the
+compare operand to be lost
+# Added CPU core affinity to debugging output
+# Added support for the CUDA 11.3 cudaDeviceFlushGPUDirectRDMAWrites API for consistency
+# Improved support for the NVIDIA Tools Extension (NVTX) to enable performance
+analysis through NVIDIA NSight
+# Removed support for nvshmem_wait API that has been deprecated in OpenSHMEM 1.5
+# Removed NVSHMEM_IS_P2P_RUN environment variable, runtime automatically determines it
+# Made improvements to NVSHMEM example codes
+# Added NVSHMEM_REMOTE_TRANSPORT environment variable for selecting the networking
+layer used for communication between nodes
+# Set maxrregcount to 32 for non-inlined device functions to ensure that calling
+these NVSHMEM functions does not negatively affect kernel occupancy
+
+===============================================================================
+				Changes in 2.0.3
+===============================================================================
+
+# Added work-around to avoid deadlocks due to CUDA context resource reconfiguration
+on Power systems
+# Added environment variable NVSHMEM_CUDA_LIMIT_STACK_SIZE to set GPU thread stack size
+on Power systems
+# Use of NCCL for stream and host NVSHMEM collectives is now supported on Power systems
+# Updated threading level support reported for host and stream-based APIs
+to NVSHMEM_THREAD_SERIALIZED. Device-side APIs support NVSHMEM_THREAD_MULTIPLE
+# Fixed a bug that could lead to incorrect behavior for atomic compare-and-swap
+# Fixed an issue that was observed to lead to incorrect results when using GDRCopy
+
+===============================================================================
+				Changes in 2.0.2 EA
+===============================================================================
+
+# Added the teams and team-based collectives APIs from OpenSHMEM 1.5.
+# Added support to use the NVIDIA Collective Communication Library (NCCL) for
+optimized NVSHMEM host and on-stream collectives.
+# Added support for RDMA over Converged Ethernet (RoCE) networks.
+# Added support for PMI-2 to enable an NVSHMEM job launch with srun/SLURM. 
+# Added support for PMIx to enable an NVSHMEM job launch with PMIx-compatible
+launchers, such as Slurm and Open MPI.
+# Uniformly reformatted the perftest benchmark output.
+# Added support for the putmem_signal and signal_wait_until APIs.
+# Improved support for single-node environments without InfiniBand.
+# Fixed a bug that occurred when large numbers of fetch atomic operations were
+performed on InfiniBand.
+# Improved topology awareness in NIC-to-GPU assignments for DGX A100 systems.
+
+===============================================================================
+				Changes in 1.1.3
+===============================================================================
+
+# Implements nvshmem_<type>_put_signal API from OpenSHMEM 1.5
+# Adds nvshmemx_signal_op API
+# Optimizes implementation of signal set operation over P2P connected GPUs
+# Optimizes performance of nvshmem_fence() function
+# Optimizes latency of NVSHMEM atomics API
+# Fixes bug in nvshmem_ptr API
+# Fixes bug in implementation of host-side strided transfer (iput, iget, etc.) API
+# Fixes bug in on-stream reduction for `long long` datatype
+# Fixes hang during nvshmem barrier collective operation
+# Fixes __device__ nvshmem_quiet() to also do quiet on IB ops to self
+# Fixes bug in fetch atomic and g implementation 
+
+===============================================================================
+				Changes in 1.0.1
+===============================================================================
+
+# Combines the memory of multiple GPUs into a partitioned global address space 
+that’s accessed through NVSHMEM APIs.
+# Includes a low-overhead, in-kernel communication API for use by GPU threads.
+# Includes stream-based and CPU-initiated communication APIs.  
+# Supports peer-to-peer communication using NVIDIA NVLink and PCI Express and for 
+GPU clusters using NVIDIA Mellanox® InfiniBand. 
+# Supports x86 and POWER9 processors.  
+# Is interoperable with MPI and other OpenSHMEM implementations.

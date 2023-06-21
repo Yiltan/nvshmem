@@ -1,0 +1,17 @@
+Source: libnvshmem
+Section: libs
+Maintainer: NVSHMEM Maintainers <nvshmem@nvidia.com>
+Priority: optional
+Build-depends: debhelper(>=9)
+Standards-Version: 3.9.5
+
+Package: libnvshmem
+Section: libs
+Architecture: ${pkg:Arch}
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: NVSHMEM is a parallel programming interface based on OpenSHMEM
+ that provides efficient and scalable communication for NVIDIA GPU
+ clusters. NVSHMEM creates a global address space for data that spans
+ the memory of multiple GPUs and can be accessed with fine-grained
+ GPU-initiated operations, CPU-initiated operations, and operations
+ on CUDA® streams.

@@ -1,0 +1,7 @@
+set(NVHSMEM_TEST_PREFIX "perf_host_")
+macro(nvshmem_add_perftest SOURCE)
+  nvshmem_add_perftest_prefix(${SOURCE} ${NVHSMEM_TEST_PREFIX})
+endmacro()
+add_subdirectory(coll)
+add_subdirectory(init)
+add_subdirectory(pt-to-pt)

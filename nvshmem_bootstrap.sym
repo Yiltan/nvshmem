@@ -1,0 +1,4 @@
+{
+  global: nvshmemi_bootstrap_plugin_init;
+  local: *;
+};
